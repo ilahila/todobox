@@ -44,7 +44,7 @@
 					v-model="item.value" />
 
 				<button
-					@click="showTodoItemOptions($event, item)"
+					@click="showTodoItemOptions(item)"
 					class="todo-item-options-button">
 					<img src="@/assets/icons/EllipsisIcon.png" />
 				</button>
@@ -72,10 +72,7 @@ const props = defineProps(['data', 'listType']);
 
 const todoItemOptionStates = ref({});
 
-const showTodoItemOptions = (event, item) => {
-	console.log(event.target)
-	if (event.target )
-
+const showTodoItemOptions = (item) => {
 	if (todoItemOptionStates.value[item.id] == undefined) {
 		todoItemOptionStates.value = {};
 		todoItemOptionStates.value[item.id] = true;
