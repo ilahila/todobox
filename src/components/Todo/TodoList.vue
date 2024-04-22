@@ -5,10 +5,16 @@
 		<p v-if="props.listType == LIST_TYPE.DONE">Done</p>
 		<p v-else>To do</p>
 
-		<p v-if="props.listType == LIST_TYPE.DONE">Delete</p>
+		<img
+			v-if="props.listType == LIST_TYPE.DONE"
+			class="todo-list-delete-icon"
+			src="@/assets/icons/DeleteIcon.svg"
+			@click="$emit('deleteAllDoneItems')"
+			/>
 		<p
 			v-else
-			@click="$emit('addNewTodoItem')">Add</p>
+			class="todo-list-add-icon"
+			@click="$emit('addTodoItem')">+</p>
 	</div>
 
 	<hr class="separator">
@@ -31,12 +37,28 @@
 					@click="$emit('tickTodoItem', item, props.listType)">
 					<span class="checkmark"></span>
 				</label>
+
 				<input
 					type="text"
 					:disabled="item.checked"
-					@focus="addDarkBackground(item.id)"
-					@blur="removeDarkBackground(item.id)"
 					v-model="item.value" />
+
+				<button
+					@click="showTodoItemOptions($event, item)"
+					class="todo-item-options-button">
+					<img src="@/assets/icons/EllipsisIcon.png" />
+				</button>
+				
+				<div v-if="todoItemOptionStates[item.id]" class="todo-item-options">
+					<div
+						@click="$emit('deleteTodoItem', item.id, props.listType)"
+						class="todo-item-option">
+						<img
+							class="todo-list-delete-icon"
+							src="@/assets/icons/DeleteIcon.svg"/>
+						<p>Delete</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -44,27 +66,31 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { ref, defineProps } from 'vue';
 import LIST_TYPE from '@/constants/LIST_TYPE';
 const props = defineProps(['data', 'listType']);
 
-// Posto container citav treba biti tamniji na fokusu, morao sam uraditi ovaj work-around
-// kako bi se prikazao tamni background na cijelom parent containeru, a ne samo na inputu
+const todoItemOptionStates = ref({});
 
-const addDarkBackground = (id) => {
-	document.querySelector(`.todo-item-${id}`).classList.add('dark-input');
-}
-const removeDarkBackground = (id) => {
-	document.querySelector(`.todo-item-${id}`).classList.remove('dark-input');
+const showTodoItemOptions = (event, item) => {
+	console.log(event.target)
+	if (event.target )
+
+	if (todoItemOptionStates.value[item.id] == undefined) {
+		todoItemOptionStates.value = {};
+		todoItemOptionStates.value[item.id] = true;
+	}
+	else
+		todoItemOptionStates.value[item.id] = !todoItemOptionStates.value[item.id];
 }
 
 const startDrag = (event, item) => {
-	console.log("on start drag")
-	console.log(item)
-	event.dataTransfer.dropEffect = "move"
-	event.dataTransfer.effectAllowed = "move"
-	event.dataTransfer.setData("itemId", item.id)
-	event.dataTransfer.setData("dragStartListType", props.listType)
+	todoItemOptionStates.value = {};
+
+	event.dataTransfer.dropEffect = "move";
+	event.dataTransfer.effectAllowed = "move";
+	event.dataTransfer.setData("itemId", item.id);
+	event.dataTransfer.setData("dragStartListType", props.listType);
 }
 
 </script>
@@ -72,10 +98,6 @@ const startDrag = (event, item) => {
 <style scoped>
 .drop-zone {
 	height: 100%;
-}
-
-.dark-input {
-	background: rgba(34, 34, 34, 0.1);
 }
 
 .todo-list {
@@ -87,7 +109,31 @@ const startDrag = (event, item) => {
 	flex-direction: column;
 	gap: .5rem;
 	min-height: 400px;
+	margin-bottom: 2rem;
 }
+
+.todo-list-add-icon, .todo-list-delete-icon {
+	width: 20px;
+	height: 20px;
+	user-select: none;
+}
+
+.todo-list-add-icon {
+	color: white;
+	background: #7a7a7a;
+	border-radius: 4px;
+	display: flex;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+}
+
+.todo-list-delete-icon:hover {
+	cursor: pointer;
+}
+
 
 .todo-list p {
 	font-weight: 500;
@@ -116,10 +162,19 @@ const startDrag = (event, item) => {
 .todo-item {
 	display: flex;
 	align-items: center;
+	position: relative;
 	gap: .75rem;
 	border-radius: 4px;
 	padding: .5rem;
 	padding-right: 0;
+}
+
+.todo-item:hover {
+	background: rgba(34, 34, 34, 0.1);
+}
+
+.todo-item:hover .todo-item-options-button {
+	display: block;
 }
 
 .todo-item input[type=text] {
@@ -134,6 +189,53 @@ const startDrag = (event, item) => {
 
 .todo-item input[type=text]:disabled {
 	background: none;
+}
+
+.todo-item-options-button {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	display: none;
+	border: none;
+	outline: none;
+	background: #e8e8e8;
+}
+
+.todo-item-options-button:hover {
+	cursor: pointer;
+}
+
+.todo-item-options-button img {
+	width: 16px;
+	height: 16px;
+}
+
+.todo-item-options {
+	display: block;
+	position: absolute;
+	transform: translate(100%);
+	right: 0;
+	border-radius: 4px;
+	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+	background: white;
+	min-width: 200px;
+	z-index: 10;
+}
+
+.todo-item-option {
+	display: flex;
+	border-radius: 4px;
+	gap: 1rem;
+	padding: 1rem;
+}
+
+.todo-item-option p {
+	font-weight: 400;
+}
+
+.todo-item-option:hover {
+	background: #e8e8e8;
+	cursor: pointer;
 }
 
 .checkmark-container {
