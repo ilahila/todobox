@@ -13,8 +13,8 @@
 	<hr class="separator">
 
 	<div class="item-container">
-		<div
-			class="data-container"
+		<div class="data-container"
+			:class="'data-container-' + item.id"
 			v-for="item in data"
 			:key="item.id">
 			<label class="checkmark-container">
@@ -27,6 +27,8 @@
 			<input
 				type="text"
 				:disabled="item.checked"
+				@focus="addDarkBackground(item.id)"
+				@blur="removeDarkBackground(item.id)"
 				v-model="item.value" />
 		</div>
 	</div>
@@ -37,9 +39,24 @@
 import { defineProps } from 'vue';
 import LIST_TYPE from '@/constants/LIST_TYPE';
 const props = defineProps(['data', 'listType']);
+
+// Posto container citav treba biti tamniji na fokusu, morao sam uraditi ovaj work-around
+// kako bi se prikazao tamni background na cijelom parent containeru, a ne samo na inputu
+
+const addDarkBackground = (id) => {
+	document.querySelector(`.data-container-${id}`).classList.add('dark-input');
+}
+const removeDarkBackground = (id) => {
+	document.querySelector(`.data-container-${id}`).classList.remove('dark-input');
+}
+
 </script>
 
 <style scoped>
+.dark-input {
+	background: rgba(34, 34, 34, 0.1);
+}
+
 .todo-list {
 	background: white;
 	padding: 1.5rem;
@@ -72,13 +89,16 @@ const props = defineProps(['data', 'listType']);
 .item-container {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
+	gap: 1rem;
 }
 
 .data-container {
 	display: flex;
 	align-items: center;
 	gap: .75rem;
+	border-radius: 4px;
+	padding: .5rem;
+	padding-right: 0;
 }
 
 .data-container input[type=text] {
@@ -88,6 +108,7 @@ const props = defineProps(['data', 'listType']);
 	color: #222222;
 	font-size: 14px;
 	width: 100%;
+	background: none;
 }
 
 .data-container input[type=text]:disabled {
