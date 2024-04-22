@@ -1,6 +1,7 @@
 <template>
 <div class="todo-list">
-	<div class="todo-list-header">
+	<div
+	class="todo-list-header">
 		<p v-if="props.listType == LIST_TYPE.DONE">Done</p>
 		<p v-else>To do</p>
 
@@ -12,24 +13,31 @@
 
 	<hr class="separator">
 
-	<div class="item-container">
-		<div class="data-container"
-			:class="'data-container-' + item.id"
-			v-for="item in data"
-			:key="item.id">
-			<label class="checkmark-container">
-				<input
+	<div
+		class="drop-zone"
+		@drop="$emit('onDropTodoItem', $event, props.listType)"
+		@dragenter.prevent @dragover.prevent>
+		<div class="item-container">
+			<div class="todo-item"
+				@dragstart="startDrag($event, item)"
+				draggable="true"
+				:class="'todo-item-' + item.id"
+				v-for="item in data"
+				:key="item.id">
+				<label class="checkmark-container">
+					<input
 					type="checkbox"
 					:checked="item.checked"
 					@click="$emit('tickTodoItem', item, props.listType)">
-				<span class="checkmark"></span>
-			</label>
-			<input
-				type="text"
-				:disabled="item.checked"
-				@focus="addDarkBackground(item.id)"
-				@blur="removeDarkBackground(item.id)"
-				v-model="item.value" />
+					<span class="checkmark"></span>
+				</label>
+				<input
+					type="text"
+					:disabled="item.checked"
+					@focus="addDarkBackground(item.id)"
+					@blur="removeDarkBackground(item.id)"
+					v-model="item.value" />
+			</div>
 		</div>
 	</div>
 </div>
@@ -44,15 +52,28 @@ const props = defineProps(['data', 'listType']);
 // kako bi se prikazao tamni background na cijelom parent containeru, a ne samo na inputu
 
 const addDarkBackground = (id) => {
-	document.querySelector(`.data-container-${id}`).classList.add('dark-input');
+	document.querySelector(`.todo-item-${id}`).classList.add('dark-input');
 }
 const removeDarkBackground = (id) => {
-	document.querySelector(`.data-container-${id}`).classList.remove('dark-input');
+	document.querySelector(`.todo-item-${id}`).classList.remove('dark-input');
+}
+
+const startDrag = (event, item) => {
+	console.log("on start drag")
+	console.log(item)
+	event.dataTransfer.dropEffect = "move"
+	event.dataTransfer.effectAllowed = "move"
+	event.dataTransfer.setData("itemId", item.id)
+	event.dataTransfer.setData("dragStartListType", props.listType)
 }
 
 </script>
 
 <style scoped>
+.drop-zone {
+	height: 100%;
+}
+
 .dark-input {
 	background: rgba(34, 34, 34, 0.1);
 }
@@ -92,7 +113,7 @@ const removeDarkBackground = (id) => {
 	gap: 1rem;
 }
 
-.data-container {
+.todo-item {
 	display: flex;
 	align-items: center;
 	gap: .75rem;
@@ -101,7 +122,7 @@ const removeDarkBackground = (id) => {
 	padding-right: 0;
 }
 
-.data-container input[type=text] {
+.todo-item input[type=text] {
 	border: none;
 	outline: none;
 	font-family: "Roboto";
@@ -111,7 +132,7 @@ const removeDarkBackground = (id) => {
 	background: none;
 }
 
-.data-container input[type=text]:disabled {
+.todo-item input[type=text]:disabled {
 	background: none;
 }
 

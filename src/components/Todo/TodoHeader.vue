@@ -23,6 +23,8 @@
 	flex-direction: column;
 	padding: 5rem 0;
 	gap: .5rem;
+	position: relative;
+	z-index: 10;
 }
 
 .todo-description > h1 {
