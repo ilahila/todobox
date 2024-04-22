@@ -1,26 +1,41 @@
 <template>
 <div class="todo-list">
-	<p>To do</p>
+	<div class="todo-list-header">
+		<p v-if="props.listType == LIST_TYPE.DONE">Done</p>
+		<p v-else>To do</p>
+
+		<p v-if="props.listType == LIST_TYPE.DONE">Delete</p>
+		<p
+			v-else
+			@click="$emit('addNewTodoItem')">Add</p>
+	</div>
+
 	<hr class="separator">
 
 	<div class="item-container">
-		<label
-		v-for="item in data"
-		:key="item.id"
-		class="checkmark-container">
-			{{ item.value }}
+		<div
+			class="data-container"
+			v-for="item in data"
+			:key="item.id">
+			<label class="checkmark-container">
+				<input
+					type="checkbox"
+					:checked="item.checked"
+					@click="$emit('tickTodoItem', item, props.listType)">
+				<span class="checkmark"></span>
+			</label>
 			<input
-				type="checkbox"
-				:checked="item.checked"
-				@click="$emit('tickTodoItem', item, props.listType)">
-			<span class="checkmark"></span>
-		</label>
+				type="text"
+				:disabled="item.checked"
+				v-model="item.value" />
+		</div>
 	</div>
 </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
+import LIST_TYPE from '@/constants/LIST_TYPE';
 const props = defineProps(['data', 'listType']);
 </script>
 
@@ -40,6 +55,15 @@ const props = defineProps(['data', 'listType']);
 	font-weight: 500;
 }
 
+.todo-list-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.todo-list-header > p {
+	cursor: pointer;
+}
+
 .separator {
 	border: 1px solid #ebebeb;
 	margin: 1rem 0;
@@ -51,16 +75,34 @@ const props = defineProps(['data', 'listType']);
 	gap: 2rem;
 }
 
+.data-container {
+	display: flex;
+	align-items: center;
+	gap: .75rem;
+}
+
+.data-container input[type=text] {
+	border: none;
+	outline: none;
+	font-family: "Roboto";
+	color: #222222;
+	font-size: 14px;
+	width: 100%;
+}
+
+.data-container input[type=text]:disabled {
+	background: none;
+}
+
 .checkmark-container {
   position: relative;
-  padding-left: 30px;
   cursor: pointer;
   font-size: 14px;
   display: flex;
   align-items: center;
 }
 
-.checkmark-container input {
+.checkmark-container input[type=checkbox] {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -69,9 +111,6 @@ const props = defineProps(['data', 'listType']);
 }
 
 .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
   height: 20px;
   width: 20px;
   background-color: white;
@@ -79,7 +118,7 @@ const props = defineProps(['data', 'listType']);
   border: 2px solid gray;
 }
 
-.checkmark-container input:checked ~ .checkmark {
+.checkmark-container input[type=checkbox]:checked ~ .checkmark {
   background-color: #425BD9;
   border: none;
 }
@@ -90,7 +129,7 @@ const props = defineProps(['data', 'listType']);
   display: none;
 }
 
-.checkmark-container input:checked ~ .checkmark:after {
+.checkmark-container input[type=checkbox]:checked ~ .checkmark:after {
   display: block;
 }
 

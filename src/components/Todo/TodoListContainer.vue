@@ -1,7 +1,14 @@
 <template>
 <div class="todo-list-container">
-	<TodoList @tick-todo-item="tickTodoItem" :data="data.todo" list-type="todo" />
-	<TodoList @tick-todo-item="tickTodoItem" :data="data.done" list-type="done" />
+	<TodoList
+		@tick-todo-item="tickTodoItem"
+		@add-new-todo-item="addNewTodoItem"
+		:data="data.todo"
+		:list-type="LIST_TYPE.TODO" />
+	<TodoList
+		@tick-todo-item="tickTodoItem"
+		:data="data.done"
+		:list-type="LIST_TYPE.DONE" />
 </div>
 </template>
 
@@ -10,16 +17,15 @@ import LIST_TYPE from '@/constants/LIST_TYPE';
 import TodoList from './TodoList.vue';
 import { ref } from 'vue';
 
-const dataSchema = {
+let globalId = ref(2);
+const data = ref({
 	todo: [
 		{id: 1, value: "Wash dishes", checked: false}
 	],
 	done: [
 		{id: 2, value: "Clean car", checked: true}
 	]
-};
-
-const data = ref(dataSchema);
+});
 
 const tickTodoItem = (item, listType) => {
 	if (LIST_TYPE.TODO == listType) {
@@ -37,6 +43,14 @@ const tickTodoItem = (item, listType) => {
 			checked: !item.checked
 		}];
 	}
+};
+
+const addNewTodoItem = () => {
+	data.value.todo = [...data.value.todo, {
+		id: ++globalId.value,
+		value: 'Add new checkbox',
+		checked: false
+	}];
 };
 </script>
 
