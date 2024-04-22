@@ -2,12 +2,12 @@
 <div class="outer-container">
 	<div class="container">
 		<div class="navbar-left">
-			<img src="@/assets/icons/TodoboxLogo.svg" />
+			<img src="@/assets/icons/TodoboxLogo.svg" alt="Todobox logo" />
 			<p>Todobox</p>
 		</div>
 		<div class="navbar-right">
 			<p>Username</p>
-			<img src="@/assets/images/UserImage.png" />
+			<img src="@/assets/images/UserImage.png" alt="User profile picture" />
 		</div>
 	</div>
 </div>
@@ -19,8 +19,10 @@
 <style scoped>
 .outer-container {
 	background: #232C33;
-	padding: 1.5rem;
+	padding: 1rem 0;
 	color: white;
+	position: relative;
+	z-index: 1;
 }
 
 .container {
