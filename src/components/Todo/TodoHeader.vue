@@ -43,9 +43,20 @@
 }
 
 @media (max-width: 768px) {
+	.todo-container {
+		display: flex;
+		flex-direction: column;
+	}
+	.todo-description {
+		text-align: center;
+	}	
 	.todo-illustration {
-		right: -60%;
-		top: 0;
+		position: static;
+	}
+
+	.todo-illustration img {
+		width: 100%;
+		margin-bottom: 1rem;
 	}
 }
 </style>
