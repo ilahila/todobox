@@ -41,4 +41,11 @@
 .todo-illustration img {
 	width: 500px;
 }
+
+@media (max-width: 768px) {
+	.todo-illustration {
+		right: -60%;
+		top: 0;
+	}
+}
 </style>

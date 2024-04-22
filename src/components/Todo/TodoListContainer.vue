@@ -116,4 +116,10 @@ const onDropTodoItem = (event, listType) => {
 	position: relative;
 	z-index: 10;
 }
+
+@media (max-width: 768px) {
+	.todo-list-container {
+		grid-template-columns: 1fr;
+	}
+}
 </style>
