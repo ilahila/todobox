@@ -2,14 +2,26 @@
 <div class="todo-list">
 	<p>To do</p>
 	<hr class="separator">
+
+	<div class="item-container">
+		<label
+		v-for="item in data"
+		:key="item.id"
+		class="checkmark-container">
+			{{ item.value }}
+			<input
+				type="checkbox"
+				:checked="item.checked"
+				@click="$emit('tickTodoItem', item, props.listType)">
+			<span class="checkmark"></span>
+		</label>
+	</div>
 </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
-const props = defineProps(['data']);
-
-console.log(props.data)
+const props = defineProps(['data', 'listType']);
 </script>
 
 <style scoped>
@@ -33,11 +45,19 @@ console.log(props.data)
 	margin: 1rem 0;
 }
 
+.item-container {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
 .checkmark-container {
-  display: block;
   position: relative;
   padding-left: 30px;
   cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .checkmark-container input {
