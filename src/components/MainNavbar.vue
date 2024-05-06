@@ -7,7 +7,7 @@
 		</div>
 		<div class="navbar-right">
 			<p>Username</p>
-			<img src="@/assets/images/UserImage.png" alt="User profile picture" />
+			<img src="@/assets/images/UserImage.png" alt="User profile" />
 		</div>
 	</div>
 </div>
