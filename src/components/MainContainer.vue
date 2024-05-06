@@ -9,6 +9,3 @@
 import TodoHeader from './Todo/TodoHeader.vue';
 import TodoListContainer from './Todo/TodoListContainer.vue';
 </script>
-
-<style scoped>
-</style>
