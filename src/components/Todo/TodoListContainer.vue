@@ -37,13 +37,7 @@ const addTodoItem = () => {
 };
 
 const deleteTodoItem = (id, listType) => {
-	if (LIST_TYPE.TODO == listType) {
-		data.value.todo = data.value.todo.filter(currItem => id != currItem.id);
-	}
-
-	if (LIST_TYPE.DONE == listType) {
-		data.value.done = data.value.done.filter(currItem => id != currItem.id);
-	}
+	data.value[listType] = data.value[listType].filter(currItem => id != currItem.id);
 }
 
 const deleteAllDoneItems = () => {
@@ -51,8 +45,9 @@ const deleteAllDoneItems = () => {
 }
 
 const tickTodoItem = (item, listType) => {
+	data.value[listType] = data.value[listType].filter(currItem => item.id != currItem.id);
+	
 	if (LIST_TYPE.TODO == listType) {
-		data.value.todo = data.value.todo.filter(currItem => item.id != currItem.id);
 		data.value.done = [...data.value.done, {
 			...item,
 			checked: !item.checked
@@ -60,7 +55,6 @@ const tickTodoItem = (item, listType) => {
 	}
 
 	if (LIST_TYPE.DONE == listType) {
-		data.value.done = data.value.done.filter(currItem => item.id != currItem.id);
 		data.value.todo = [...data.value.todo, {
 			...item,
 			checked: !item.checked
@@ -76,20 +70,10 @@ const onDropTodoItem = (event, listType) => {
 	if (listType == dragStartListType)
 		return;
 
-	let item;
-
 	// If it gets dropped into todo, it means the dragged data is from the done list
-	if (LIST_TYPE.TODO == listType) {
-		item = data.value.done.find(x => x.id == itemId)
-	}
-
-	// If it gets dropped into done, it means the dragged data is from the todo list
-	if (LIST_TYPE.DONE == listType) {
-		item = data.value.todo.find(x => x.id == itemId)
-	}
+	const item = data.value[listType == LIST_TYPE.TODO ? LIST_TYPE.DONE : LIST_TYPE.TODO].find(x => x.id == itemId)
 
 	// Then update accordingly (remove from dragged list, transfer to dropped list)
-
 	if (LIST_TYPE.TODO == listType) {
 		data.value.done = data.value.done.filter(currItem => item.id != currItem.id);
 		data.value.todo = [...data.value.todo, {
