@@ -121,7 +121,6 @@ const startDrag = (event, item) => {
 	border-radius: 4px;
 	display: flex;
 	text-align: center;
-	display: flex;
 	align-items: center;
 	justify-content: center;
 	font-size: 18px;
