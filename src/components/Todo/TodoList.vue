@@ -46,16 +46,14 @@
 				<button
 					@click="showTodoItemOptions(item)"
 					class="todo-item-options-button">
-					<img src="@/assets/icons/EllipsisIcon.png" />
+					<img src="@/assets/icons/EllipsisIcon.png" alt="Todo item options" />
 				</button>
 				
 				<div v-if="todoItemOptionStates[item.id]" class="todo-item-options">
 					<div
 						@click="$emit('deleteTodoItem', item.id, props.listType)"
 						class="todo-item-option">
-						<img
-							class="todo-list-delete-icon"
-							src="@/assets/icons/DeleteIcon.svg"/>
+						<img class="todo-list-delete-icon" src="@/assets/icons/DeleteIcon.svg" alt="Delete todo item"/>
 						<p>Delete</p>
 					</div>
 				</div>
